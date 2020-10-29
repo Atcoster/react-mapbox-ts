@@ -1,0 +1,6 @@
+@value colors: "~styles/colors.module.css";
+@value dark-gray from colors;
+
+.wrapper {
+	height: calc(100% - 64px);
+}

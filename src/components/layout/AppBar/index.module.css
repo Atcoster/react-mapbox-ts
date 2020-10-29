@@ -1,0 +1,9 @@
+@value colors: "~styles/colors.module.css";
+@value dark-gray from colors;
+
+.root {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: dark-gray !important;
+}
