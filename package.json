@@ -23,7 +23,8 @@
 		"react-dom": "^16.14.0",
 		"react-scripts": "3.4.3",
 		"supercluster": "^7.1.0",
-		"typescript": "^3.9.7"
+		"typescript": "^3.9.7",
+		"uuid": "^8.3.1"
 	},
 	"scripts": {
 		"start": "craco start",
@@ -49,6 +50,7 @@
 		]
 	},
 	"devDependencies": {
-		"@types/mapbox-gl": "^1.12.5"
+		"@types/mapbox-gl": "^1.12.5",
+		"@types/uuid": "^8.3.0"
 	}
 }

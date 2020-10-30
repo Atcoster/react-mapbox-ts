@@ -6,15 +6,18 @@ export const useHover = () => {
 
 	const eventHandlers = useMemo(
 		() => ({
-			onHover(event: InteractionEvent) {
-				// if (event?.features?.length > 0) {
-				// 	const nextHoveredStateId = event.features[0].id;
-				// 	setHoveredId((currentHoveredId) =>
-				// 		currentHoveredId !== nextHoveredStateId ? nextHoveredStateId : currentHoveredId
-				// 	);
-				// }
+			onMouseOver(event: InteractionEvent) {
+				console.log(event);
+
+				if (event.features) {
+					const feature = event?.features[0];
+					const nextHoveredStateId = feature.id;
+					setHoveredId((currentHoveredId) =>
+						currentHoveredId !== nextHoveredStateId ? nextHoveredStateId : currentHoveredId
+					);
+				}
 			},
-			onLeave() {
+			onMouseOut() {
 				setHoveredId(null);
 			},
 		}),

@@ -66,11 +66,5 @@ declare module '@urbica/react-map-gl-cluster' {
 		clusters: Array<Object>;
 	};
 
-	export default class Cluster extends React.Component<Props, State> {
-		/** The mouseenter event handler */
-		onMouseenter?: Function;
-
-		/** The mouseleave event handler */
-		onMouseleave?: Function;
-	}
+	export default class Cluster extends React.Component<Props, State> {}
 }

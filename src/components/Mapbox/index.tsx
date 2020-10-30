@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FeatureCollection, Properties, randomPoint, BBox, Point, pointsWithinPolygon } from '@turf/turf';
 import { LngLatBounds } from 'mapbox-gl';
+import { v4 as uuidv4 } from 'uuid';
 import MapGL, { FullscreenControl, Marker, Viewport } from '@urbica/react-map-gl';
 import Cluster, { ClusterComponentProps } from '@urbica/react-map-gl-cluster';
 import Draw from '@urbica/react-map-gl-draw';
 import { Project, projects } from '@/assets/projects';
-// import { useHover } from '@/hooks/useHover';
+import { useHover } from '@/hooks/useHover';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { randomNumber } from '@/helpers/randomNumber';
 import { clusterStyle, markerStyle } from './mapStyling';
@@ -14,18 +15,21 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 const currentMapLayerStyle = 'mapbox://styles/mapbox/light-v9';
 
 const projectsWithPoints = projects.map((project) => {
+	const cpts = randomPoint(randomNumber(10, 50), { bbox: project.bbox as BBox });
+	cpts.features.forEach((point) => (point.id = uuidv4()));
+
 	return {
 		...project,
-		cpts: randomPoint(randomNumber(10, 50), { bbox: project.bbox as BBox }),
+		cpts,
 	};
 });
 
 const Mapbox = () => {
-	// const [hoveredId, eventHandlers] = useHover();
+	const [hovered, eventHandlers] = useHover();
 	const mapRef = useRef<MapGL>(null);
-	const clusterRef = useRef<Marker>(null);
 	const [drawedPolygons, setDrawedPolygons] = useState<Record<string, FeatureCollection>>({});
 	const [selectedProject, setSelectedProject] = useState<Project>();
+	const [selectedCpts, setSelectedCpts] = useState<typeof uuidv4[]>();
 	const [viewport, setViewport] = useState<Viewport>({
 		latitude: 52.21158,
 		longitude: 5.600489,
@@ -37,11 +41,18 @@ const Mapbox = () => {
 			const ptsWithin = Object.values(drawedPolygons).map((polygon) => {
 				return polygon.features.map((f) => {
 					// @ts-ignore
-					return pointsWithinPolygon(selectedProject.cpts, f).features;
+					return pointsWithinPolygon(selectedProject.cpts, f).features.map((f) => {
+						return f.id;
+					});
 				});
 			});
 
-			console.log(ptsWithin);
+			console.log(ptsWithin[0]);
+
+			// setSelectedCpts((curr) => {
+			// 	const cloned = curr?.flatMap(ptsWithin[0]);
+			// 	return [];
+			// });
 		}
 	}, [drawedPolygons, selectedProject]);
 
@@ -77,7 +88,6 @@ const Mapbox = () => {
 
 		return (
 			<Marker
-				ref={clusterRef}
 				longitude={longitude}
 				latitude={latitude}
 				anchor="center"
@@ -137,7 +147,6 @@ const Mapbox = () => {
 					</Cluster>
 				);
 			})}
-			{/* {hoveredId && <FeatureState id={hoveredId} source="points" state={{ hover: true }} />} */}
 			<Draw
 				keybindings={true}
 				lineStringControl={false}
